@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 import datetime
-from forms import SignUpForm, LoginForm
-from models import UserModel, SessionToken
+from forms import SignUpForm, LoginForm, PostForm
+from models import UserModel, SessionToken, PostModel
+from imgurpython import ImgurClient
+from InstaClone.settings import BASE_DIR
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from datetime import timedelta
@@ -66,5 +68,35 @@ def check_validation(request):
   else:
     return None
 
+
+def post_view(request):
+    user = check_validation(request)
+
+    if user:
+        if request.method == 'GET':
+            form = PostForm()
+            return render(request,'post.html', {'form': form })
+
+        elif request.method == 'POST':
+            form =PostForm(request.POST, request.FILES)
+            if form.is_valid():
+                image =form.cleaned_data.get('image')
+                caption = form.cleaned_data.get('caption')
+
+                post = PostModel(user=user, image=image, caption=caption)
+                post.save()
+                path = str(BASE_DIR + "/" + post.image.url)
+                client = ImgurClient('b687dd6bf09e4cd', '69bbb8f5736512481ccd5dcf5082480146312fe1')
+                post.image_url = client.upload_from_path(path, anon=True)["link"]
+                post.save()
+    else:
+        return redirect('/login')
+
+
 def feed_view(request):
-    return render(request,'feed.html', {})
+    user = check_validation(request)
+    if user:
+        posts= PostModel.objects.all().order_by('created_on')
+        return render(request, 'feed.html',{'posts': posts})
+    else:
+        redirect('/login/')

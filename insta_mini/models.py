@@ -8,10 +8,13 @@ class UserModel(BaseModel):
       """
       email = models.EmailField(unique=True, null=False, blank=False)
       name = models.CharField(max_length=120)
-      username = models.CharField(max_length=120, unique=True, null=False, blank=False)
+      username = models.CharField(max_length=120)
       password = models.CharField(max_length=120)
 
-class SessionToken(models.Model):
+class SessionToken(BaseModel):
+    """
+     this class is for session token
+    """
     user = models.ForeignKey(UserModel)
     session_token = models.CharField(max_length=255)
     created_on = models.DateTimeField(auto_now_add=True)
@@ -21,4 +24,14 @@ class SessionToken(models.Model):
         from uuid import uuid4
 
         self.session_token = uuid4()
+
+
+class PostModel(BaseModel):
+    """
+     this class is for creating the post
+    """
+    user = models.ForeignKey(UserModel)
+    image = models.FileField(upload_to='user_images')
+    image_url = models.CharField(max_length=255)
+    caption = models.CharField(max_length=250)
 
