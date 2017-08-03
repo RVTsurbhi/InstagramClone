@@ -65,6 +65,8 @@ def check_validation(request):
     session = SessionToken.objects.filter(session_token=request.COOKIES.get('session_token')).first()
     if session:
       return session.user
+    else:
+      return None
   else:
     return None
 
@@ -73,11 +75,8 @@ def post_view(request):
     user = check_validation(request)
 
     if user:
-        if request.method == 'GET':
-            form = PostForm()
-            return render(request,'post.html', {'form': form })
 
-        elif request.method == 'POST':
+        if request.method == 'POST':
             form =PostForm(request.POST, request.FILES)
             if form.is_valid():
                 image =form.cleaned_data.get('image')
@@ -89,8 +88,13 @@ def post_view(request):
                 client = ImgurClient('b687dd6bf09e4cd', '69bbb8f5736512481ccd5dcf5082480146312fe1')
                 post.image_url = client.upload_from_path(path, anon=True)["link"]
                 post.save()
+                return redirect('/feed/')
+
+        elif request.method == 'GET':
+            form = PostForm()
+        return render(request, 'post.html', {'form': form})
     else:
-        return redirect('/login')
+        return redirect('/login/')
 
 
 def feed_view(request):
