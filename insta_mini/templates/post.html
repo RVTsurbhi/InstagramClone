@@ -9,18 +9,9 @@
       <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form }}
-          <input type="submit" class="btn btn-default" value="upload image">
 
-          <div>
-             <label for="image">Image:</label>
-              <input id="image" type="file" name="image" accept="image/*" value="{{ image }}">
-          </div><br>
 
-          <div>
-              <label for="caption">Caption:</label>
-              <input id="caption" type="text" name="caption" value="{{ caption }}">
 
-          </div><br>
 
           <div>
               <input type="submit" class="btn btn-success" value="post">
