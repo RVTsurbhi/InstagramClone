@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
 import datetime
-from forms import SignUpForm, LoginForm, PostForm
-from models import UserModel, SessionToken, PostModel
+from forms import SignUpForm, LoginForm, PostForm, LikeForm
+from models import UserModel, SessionToken, PostModel, LikeModel
 from imgurpython import ImgurClient
 from InstaClone.settings import BASE_DIR
 from django.http import HttpResponse
@@ -81,9 +81,9 @@ def post_view(request):
             if form.is_valid():
                 image =form.cleaned_data.get('image')
                 caption = form.cleaned_data.get('caption')
-
                 post = PostModel(user=user, image=image, caption=caption)
                 post.save()
+
                 path = str(BASE_DIR + "/" + post.image.url)
                 client = ImgurClient('b687dd6bf09e4cd', '69bbb8f5736512481ccd5dcf5082480146312fe1')
                 post.image_url = client.upload_from_path(path, anon=True)["link"]
@@ -101,6 +101,30 @@ def feed_view(request):
     user = check_validation(request)
     if user:
         posts= PostModel.objects.all().order_by('created_on')
+
+        for post in posts:
+            exiting_like = LikeModel.objects.filter(post_id= post.id, user=user).first()
+            if exiting_like:
+                post.has_liked = True
+
         return render(request, 'feed.html',{'posts': posts})
     else:
-        redirect('/login/')
+        return redirect('/login/')
+
+
+def like_view(request):
+    user = check_validation(request)
+    if user and request.method == 'POST':
+        form = LikeForm(request.POST)
+        #to check if user has already liked the post or not
+        if form.is_valid():
+            post_id = form.cleaned_data.get('post').id
+            existing_like = LikeModel.objects.filter(post_id= post_id, user= user).first()
+
+            if not existing_like:
+                LikeModel.objects.create(post_id= post_id, user=user)
+            else:
+                existing_like.delete()
+            return redirect('/feed/')
+    else:
+        return redirect('/login/')

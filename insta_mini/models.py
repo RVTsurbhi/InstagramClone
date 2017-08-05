@@ -17,7 +17,6 @@ class SessionToken(BaseModel):
     """
     user = models.ForeignKey(UserModel)
     session_token = models.CharField(max_length=255)
-    created_on = models.DateTimeField(auto_now_add=True)
     is_valid = models.BooleanField(default=True)
 
     def create_session_token(self):
@@ -34,4 +33,18 @@ class PostModel(BaseModel):
     image = models.FileField(upload_to='user_images')
     image_url = models.CharField(max_length=255)
     caption = models.CharField(max_length=250)
+    has_liked = False
+
+    #create a function virtually of like count on a post
+    @property
+    def like_count(self):
+        return len(LikeModel.objects.filter(post=self))
+
+
+class LikeModel(BaseModel):
+    """
+     this class is for no. of likes (which user like which post)
+    """
+    user = models.ForeignKey(UserModel)
+    post = models.ForeignKey(PostModel)
 
