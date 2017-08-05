@@ -40,6 +40,11 @@ class PostModel(BaseModel):
     def like_count(self):
         return len(LikeModel.objects.filter(post=self))
 
+    #create a function to return the comments on a current post
+    @property
+    def comments(self):
+        return CommentModel.objects.filter(post=self).order_by('created_on')
+
 
 class LikeModel(BaseModel):
     """
@@ -47,4 +52,12 @@ class LikeModel(BaseModel):
     """
     user = models.ForeignKey(UserModel)
     post = models.ForeignKey(PostModel)
+
+class CommentModel(BaseModel):
+    """
+     this class shows the comments
+    """
+    user = models.ForeignKey(UserModel)
+    post = models.ForeignKey(PostModel)
+    comment_text = models.CharField(max_length=500)
 
