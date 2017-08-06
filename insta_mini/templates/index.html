@@ -3,9 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>INSTAGRAM CLONE</title>
-</head>
-<body>
 
+     <style>
+          body{
+              background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS--0VLzR6JOLR_sP_i2sKMPIh5oKzqcm0eBcKGK08K3n0cJ_ESNQ");
+              background-size: cover;
+              background-position: center;
+          }
+         .available
+         {
+             text-align: center;
+             font-size: 30px;
+         }
+         .again{
+             text-align: center;
+             font-size: 20px;
+         }
+         .main{
+             text-align: center;
+             font-size: 20px;
+         }
+     </style>
+</head>
+
+<body>
      <div class="main">
             <h1> Instagram Clone</h1>
             <h3>Sign Up</h3>
@@ -13,7 +34,7 @@
 
      </div>
 
-      <div>
+      <div class="available">
           <form method="POST">
               {% csrf_token %}
 
@@ -42,7 +63,7 @@
       </div>
       <br><br>
 
-      <div><h3>Already a user?</h3><a href="/login/">Login</a> </div>
+      <div class="again"><h3>Already a user?</h3><a href="/login/">Login</a> </div>
 
 
 </body>

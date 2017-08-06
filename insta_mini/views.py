@@ -59,18 +59,6 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
-#For validating the session
-def check_validation(request):
-  if request.COOKIES.get('session_token'):
-    session = SessionToken.objects.filter(session_token=request.COOKIES.get('session_token')).first()
-    if session:
-      return session.user
-    else:
-      return None
-  else:
-    return None
-
-
 def post_view(request):
     user = check_validation(request)
 
@@ -145,3 +133,15 @@ def comment_view(request):
             return redirect('/feed/')
     else:
         return redirect('/login/')
+
+
+#For validating the session
+def check_validation(request):
+  if request.COOKIES.get('session_token'):
+    session = SessionToken.objects.filter(session_token=request.COOKIES.get('session_token')).first()
+    if session:
+      return session.user
+    else:
+      return None
+  else:
+    return None

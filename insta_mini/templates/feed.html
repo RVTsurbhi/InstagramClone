@@ -3,6 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Feed</title>
+
+    <style>
+
+           html, body {
+             height: 100%;
+           }
+
+        html {
+            display: table;
+            margin: auto;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+            background-color: #F08080;
+        }
+
+
+    </style>
 </head>
 <body>
      <form method="POST" action="/post/">
@@ -12,12 +32,12 @@
      </form>
      {% for post in posts %}
 
-          <h3>
+          <h3 >
               Posted by: {{ post.user.username }}
           </h3>
           <p>[{{ post.created_on }}]</p>
 
-          <img style="display: inline-block; width: 400px; height: 300px;" src="{{ post.image_url }}"><br>
+          <img style="display: inline-block;  width: 400px; height: 300px;" src="{{ post.image_url }}"><br>
           <span style="display: inline-block;">
             {{ post.caption }}
           </span><br/>
@@ -26,7 +46,7 @@
              {{ post.like_count }} like this
          </div>
 
-         <div>
+         <div class="mypost">
 
              <form method="POST" action="/like/">
                  {% csrf_token %}
@@ -40,7 +60,7 @@
              </form>
          </div>
 
-         <div>
+         <div class="mypost">
 
              <form method="POST" action="/comment/">
                  {% csrf_token %}
@@ -51,7 +71,7 @@
              </form>
          </div>
 
-         <div>
+         <div class="mypost">
 
              {% for comment in post.comments %}
 
